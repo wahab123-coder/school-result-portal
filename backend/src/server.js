@@ -14,6 +14,7 @@ app.use(cors({
     'http://localhost:5175',
     'http://localhost:3000',
     'https://qhc-frontend.onrender.com',
+    'https://school-result-portal.onrender.com',
     process.env.FRONTEND_URL
   ].filter(Boolean),
   credentials: true
