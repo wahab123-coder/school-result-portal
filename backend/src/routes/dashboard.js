@@ -64,4 +64,51 @@ router.get('/teachers', authenticate, authorize('admin'), (req, res) => {
   res.json(result);
 });
 
+// POST /api/dashboard/teachers — create a new teacher
+router.post('/teachers', authenticate, authorize('admin'), (req, res) => {
+  const db = getDB();
+  const { full_name, employee_id, username, password, email } = req.body;
+
+  if (!full_name || !employee_id || !username || !password)
+    return res.status(400).json({ error: 'full_name, employee_id, username and password are required' });
+
+  const existingUser = db.prepare('SELECT id FROM users WHERE LOWER(username) = LOWER(?)').get(username.trim());
+  if (existingUser) return res.status(409).json({ error: 'Username already exists' });
+
+  const existingEmp = db.prepare('SELECT id FROM teachers WHERE employee_id = ?').get(employee_id.trim());
+  if (existingEmp) return res.status(409).json({ error: 'Employee ID already exists' });
+
+  try {
+    const bcrypt = require('bcryptjs');
+    const hashed = bcrypt.hashSync(password, 10);
+
+    const userResult = db.prepare(
+      'INSERT INTO users (username, password, role, full_name, email) VALUES (?, ?, ?, ?, ?)'
+    ).run(username.trim(), hashed, 'teacher', full_name.trim(), email?.trim() || null);
+
+    db.prepare(
+      'INSERT INTO teachers (user_id, full_name, employee_id) VALUES (?, ?, ?)'
+    ).run(userResult.lastInsertRowid, full_name.trim(), employee_id.trim());
+
+    res.status(201).json({ message: 'Teacher created successfully' });
+  } catch (err) {
+    console.error('Create teacher error:', err);
+    res.status(500).json({ error: 'Failed to create teacher' });
+  }
+});
+
+// DELETE /api/dashboard/teachers/:id — delete a teacher
+router.delete('/teachers/:id', authenticate, authorize('admin'), (req, res) => {
+  const db = getDB();
+  const teacher = db.prepare('SELECT * FROM teachers WHERE id = ?').get(req.params.id);
+  if (!teacher) return res.status(404).json({ error: 'Teacher not found' });
+
+  db.prepare('DELETE FROM teacher_classes WHERE teacher_id = ?').run(teacher.id);
+  db.prepare('DELETE FROM teacher_subjects WHERE teacher_id = ?').run(teacher.id);
+  db.prepare('DELETE FROM teachers WHERE id = ?').run(teacher.id);
+  if (teacher.user_id) db.prepare('DELETE FROM users WHERE id = ?').run(teacher.user_id);
+
+  res.json({ message: 'Teacher deleted successfully' });
+});
+
 module.exports = router;
