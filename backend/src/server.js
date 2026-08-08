@@ -136,10 +136,24 @@ async function autoSeed(db) {
     });
   }
 
-  console.log('Auto-seed complete.');
+  // Parent demo account
+  try {
+    db.prepare('INSERT INTO users (username, password, role, full_name, email) VALUES (?,?,?,?,?)')
+      .run('parent1', hash('parent123'), 'parent', 'Mrs. Fatima Adaeze', 'parent1@school.edu');
+    const parentUser = db.prepare("SELECT id FROM users WHERE username='parent1'").get();
+    db.prepare('INSERT INTO parents (user_id, full_name, phone) VALUES (?,?,?)')
+      .run(parentUser.id, 'Mrs. Fatima Adaeze', '08098765432');
+    const parent = db.prepare("SELECT id FROM parents WHERE user_id=?").get(parentUser.id);
+    // Link to student1 and student3
+    const s1 = db.prepare("SELECT id FROM students WHERE admission_number='ADM/2024/001'").get();
+    const s3 = db.prepare("SELECT id FROM students WHERE admission_number='ADM/2024/003'").get();
+    if (s1) db.prepare('INSERT INTO parent_students (parent_id,student_id,relationship) VALUES (?,?,?)').run(parent.id, s1.id, 'Mother');
+    if (s3) db.prepare('INSERT INTO parent_students (parent_id,student_id,relationship) VALUES (?,?,?)').run(parent.id, s3.id, 'Mother');
+  } catch(e) {}
   console.log('Admin: admin / admin123');
   console.log('Teacher: teacher1 / teacher123');
   console.log('Student: student1 / student123');
+  console.log('Parent: parent1 / parent123');
 }
 
 // Initialize DB first, then mount routes
@@ -158,6 +172,8 @@ initDB().then(async () => {
   const resultRoutes    = require('./routes/results');
   const dashboardRoutes = require('./routes/dashboard');
   const profileRoutes   = require('./routes/profile');
+  const parentRoutes    = require('./routes/parents');
+  const feeRoutes       = require('./routes/fees');
 
   app.use('/api/auth',      authRoutes);
   app.use('/api/users',     userRoutes);
@@ -168,6 +184,8 @@ initDB().then(async () => {
   app.use('/api/results',   resultRoutes);
   app.use('/api/dashboard', dashboardRoutes);
   app.use('/api/profile',   profileRoutes);
+  app.use('/api/parents',   parentRoutes);
+  app.use('/api/fees',      feeRoutes);
 
   app.use((req, res) => res.status(404).json({ error: 'Route not found' }));
   app.use((err, req, res, next) => {

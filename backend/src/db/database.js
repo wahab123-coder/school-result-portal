@@ -223,6 +223,108 @@ async function initDB() {
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       UNIQUE(student_id, session_id, term)
+    )`,
+
+    /* ── PARENT PORTAL TABLES ─────────────────────────────── */
+
+    `CREATE TABLE IF NOT EXISTS parents (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER UNIQUE NOT NULL,
+      full_name TEXT NOT NULL,
+      phone TEXT,
+      address TEXT,
+      occupation TEXT,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )`,
+
+    `CREATE TABLE IF NOT EXISTS parent_students (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      parent_id INTEGER NOT NULL,
+      student_id INTEGER NOT NULL,
+      relationship TEXT DEFAULT 'Parent',
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      UNIQUE(parent_id, student_id)
+    )`,
+
+    `CREATE TABLE IF NOT EXISTS fee_structures (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      class_id INTEGER,
+      session_id INTEGER NOT NULL,
+      term TEXT NOT NULL,
+      amount REAL NOT NULL,
+      description TEXT,
+      is_active INTEGER DEFAULT 1,
+      created_by INTEGER,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )`,
+
+    `CREATE TABLE IF NOT EXISTS fee_categories (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      fee_structure_id INTEGER NOT NULL,
+      name TEXT NOT NULL,
+      amount REAL NOT NULL,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )`,
+
+    `CREATE TABLE IF NOT EXISTS invoices (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      student_id INTEGER NOT NULL,
+      fee_structure_id INTEGER NOT NULL,
+      session_id INTEGER NOT NULL,
+      term TEXT NOT NULL,
+      total_amount REAL NOT NULL,
+      amount_paid REAL DEFAULT 0,
+      outstanding REAL GENERATED ALWAYS AS (total_amount - amount_paid) STORED,
+      status TEXT DEFAULT 'unpaid',
+      due_date TEXT,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      UNIQUE(student_id, fee_structure_id, session_id, term)
+    )`,
+
+    `CREATE TABLE IF NOT EXISTS payments (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      invoice_id INTEGER NOT NULL,
+      student_id INTEGER NOT NULL,
+      parent_id INTEGER,
+      amount REAL NOT NULL,
+      payment_method TEXT DEFAULT 'bank_transfer',
+      payment_reference TEXT,
+      transaction_id TEXT,
+      payment_date TEXT NOT NULL,
+      evidence_file TEXT,
+      status TEXT DEFAULT 'pending',
+      approved_by INTEGER,
+      approved_at DATETIME,
+      rejection_reason TEXT,
+      notes TEXT,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )`,
+
+    `CREATE TABLE IF NOT EXISTS receipts (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      payment_id INTEGER NOT NULL UNIQUE,
+      receipt_number TEXT UNIQUE NOT NULL,
+      student_id INTEGER NOT NULL,
+      parent_id INTEGER,
+      amount REAL NOT NULL,
+      session_id INTEGER NOT NULL,
+      term TEXT NOT NULL,
+      generated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )`,
+
+    `CREATE TABLE IF NOT EXISTS notifications (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER NOT NULL,
+      title TEXT NOT NULL,
+      message TEXT NOT NULL,
+      type TEXT DEFAULT 'info',
+      is_read INTEGER DEFAULT 0,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )`
   ];
 

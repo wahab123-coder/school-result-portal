@@ -14,6 +14,9 @@ const Icon = {
   Scores:    () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>,
   Profile:   () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,
   Password:  () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>,
+  Parents:   () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
+  Fees:      () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>,
+  Payments:  () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>,
   Logout:    () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>,
   Menu:      () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>,
   Close:     () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>,
@@ -23,24 +26,35 @@ const adminNav = [
   { to: '/admin',           label: 'Dashboard',      icon: Icon.Dashboard },
   { to: '/admin/students',  label: 'Students',        icon: Icon.Students  },
   { to: '/admin/teachers',  label: 'Teachers',        icon: Icon.Teachers  },
+  { to: '/admin/parents',   label: 'Parents',         icon: Icon.Parents   },
   { to: '/admin/classes',   label: 'Classes',         icon: Icon.Classes   },
   { to: '/admin/subjects',  label: 'Subjects',        icon: Icon.Subjects  },
   { to: '/admin/results',   label: 'Results',         icon: Icon.Results   },
   { to: '/teacher/scores',  label: 'Score Entry',     icon: Icon.Scores    },
+  { to: '/admin/fees',      label: 'Fee Management',  icon: Icon.Fees      },
+  { to: '/admin/payments',  label: 'Payments',        icon: Icon.Payments  },
   { to: '/admin/profile',   label: 'My Profile',      icon: Icon.Profile   },
   { to: '/admin/password',  label: 'Change Password', icon: Icon.Password  },
 ]
 const teacherNav = [
-  { to: '/teacher',          label: 'Dashboard',      icon: Icon.Dashboard },
-  { to: '/teacher/scores',   label: 'Enter Scores',   icon: Icon.Scores    },
-  { to: '/teacher/profile',  label: 'My Profile',     icon: Icon.Profile   },
-  { to: '/teacher/password', label: 'Change Password', icon: Icon.Password },
+  { to: '/teacher',          label: 'Dashboard',       icon: Icon.Dashboard },
+  { to: '/teacher/scores',   label: 'Enter Scores',    icon: Icon.Scores    },
+  { to: '/teacher/profile',  label: 'My Profile',      icon: Icon.Profile   },
+  { to: '/teacher/password', label: 'Change Password', icon: Icon.Password  },
 ]
 const studentNav = [
-  { to: '/student',          label: 'Dashboard',      icon: Icon.Dashboard },
-  { to: '/student/results',  label: 'My Results',     icon: Icon.Results   },
-  { to: '/student/profile',  label: 'My Profile',     icon: Icon.Profile   },
-  { to: '/student/password', label: 'Change Password', icon: Icon.Password },
+  { to: '/student',          label: 'Dashboard',       icon: Icon.Dashboard },
+  { to: '/student/results',  label: 'My Results',      icon: Icon.Results   },
+  { to: '/student/profile',  label: 'My Profile',      icon: Icon.Profile   },
+  { to: '/student/password', label: 'Change Password', icon: Icon.Password  },
+]
+const parentNav = [
+  { to: '/parent',           label: 'Dashboard',       icon: Icon.Dashboard },
+  { to: '/parent/children',  label: 'My Children',     icon: Icon.Students  },
+  { to: '/parent/fees',      label: 'School Fees',     icon: Icon.Fees      },
+  { to: '/parent/receipts',  label: 'Receipts',        icon: Icon.Payments  },
+  { to: '/parent/profile',   label: 'My Profile',      icon: Icon.Profile   },
+  { to: '/parent/password',  label: 'Change Password', icon: Icon.Password  },
 ]
 
 export default function Layout({ children, title }) {
@@ -60,7 +74,8 @@ export default function Layout({ children, title }) {
 
   const navItems =
     user?.role === 'admin'   ? adminNav :
-    user?.role === 'teacher' ? teacherNav : studentNav
+    user?.role === 'teacher' ? teacherNav :
+    user?.role === 'parent'  ? parentNav : studentNav
 
   const handleLogout = () => {
     logout()
@@ -69,8 +84,9 @@ export default function Layout({ children, title }) {
   }
 
   const roleBadge =
-    user?.role === 'admin'   ? 'badge-red'   :
-    user?.role === 'teacher' ? 'badge-blue'  : 'badge-green'
+    user?.role === 'admin'   ? 'badge-red'    :
+    user?.role === 'teacher' ? 'badge-blue'   :
+    user?.role === 'parent'  ? 'badge-purple' : 'badge-green'
 
   const endPaths = ['/admin', '/teacher', '/student']
 
